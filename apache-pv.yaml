@@ -8,9 +8,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: ebs-sc
-  accessModes:
-    - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
   awsElasticBlockStore:
-    volumeID: vol-071affc491c34ddcc # Replace with new volume ID, whcih is created from snapshot
+    volumeID: vol-097411a8fb1089384 #Replace with new volume ID, whcih is created from snapshot
     fsType: ext4
