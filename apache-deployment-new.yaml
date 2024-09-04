@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment-new
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: topology.kubernetes.io/zone
+                operator: In
+                values:
+                - us-east-2b
+      initContainers:
+      - name: init-apache
+        image: httpd
+        command: ["/bin/sh", "-c"]
+        args: ["cp -r /usr/local/apache2/* /mnt/apache2/"]
+        volumeMounts:
+        - name: apache-pvc-new
+          mountPath: /mnt/apache2
+      containers:
+      - name: apache
+        image: httpd
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: apache-pvc-new
+          mountPath: /usr/local/apache2
+      volumes:
+      - name: apache-pvc-new
+        persistentVolumeClaim:
+          claimName: apache-pvc-new
